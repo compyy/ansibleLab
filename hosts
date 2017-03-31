@@ -1,0 +1,28 @@
+[CISCO-PE]
+PE1 ansible_host=192.168.122.251
+PE2 ansible_host=192.168.122.250
+PE4 ansible_host=192.168.122.248
+
+[CISCO-PE:vars]
+ansible_user=cisco
+ansible_ssh_pass=cisco
+
+[CISCO-CE]
+CUSTA1 ansible_host=192.168.122.247
+CUSTA2 ansible_host=192.168.122.246
+CUSTB1 ansible_host=192.168.122.245
+CUSTB3 ansible_host=192.168.122.244
+Internet ansible_host=192.168.122.243
+
+[CISCO-CE:vars]
+ansible_user=cisco
+ansible_ssh_pass=cisco
+
+
+[ALU-PE]
+PE3 ansible_host=192.168.122.249
+ALU-2 ansible_host=192.168.122.240
+
+[ALU-PE:vars]
+ansible_user=admin
+ansible_ssh_pass=admin

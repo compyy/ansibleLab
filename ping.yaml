@@ -1,0 +1,49 @@
+---
+# Ping For Cisco PEs
+- 
+  hosts: CISCO-PE
+  tasks: 
+    - 
+      ios_command: 
+        commands: "ping 192.168.122.1"
+        provider: "{{ clicisco }}"
+  vars: 
+    clicisco: 
+      auth_pass: "{{ansible_ssh_pass}}"
+      authorize: "yes"
+      host: "{{ ansible_host }}"
+      password: "{{ansible_ssh_pass}}"
+      transport: cli
+      username: "{{ansible_user}}"
+
+# Ping For Cisco CUSTOMER
+- 
+  hosts: CISCO-CE
+  tasks: 
+    - 
+      ios_command: 
+        commands: "ping 192.168.122.1"
+        provider: "{{ clicisco }}"
+  vars: 
+    clicisco: 
+      auth_pass: "{{ansible_ssh_pass}}"
+      authorize: "yes"
+      host: "{{ ansible_host }}"
+      password: "{{ansible_ssh_pass}}"
+      transport: cli
+      username: "{{ansible_user}}"
+
+# Ping For Alcatel
+- 
+  hosts: ALU-PE
+  tasks: 
+    - 
+      sros_command: 
+        commands: "ping 192.168.122.1"
+        provider: "{{ clialu }}"
+  vars: 
+    clialu: 
+      host: "{{ ansible_host }}"
+      password: "{{ansible_ssh_pass}}"
+      transport: cli
+      username: "{{ansible_user}}"

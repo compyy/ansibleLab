@@ -1,0 +1,170 @@
+---
+# Issue 1:
+- name: 'Customer A1 Pings Customer A2'
+  hosts: CUSTA1
+  tasks: 
+    - name: 'Ping Both side IP addresses'
+      ios_command: 
+        commands: 
+          - "ping 192.168.1.2"
+        provider: "{{ clicisco }}"
+      
+      register: out
+    
+    - debug: msg="Ping Successfull between A1 and A2"
+      when: '"!!!!!" in out.stdout[0]'
+    
+    - debug: msg="Ping Failed between A1 and A2"
+      when: '"!!!!!" not in out.stdout[0]'
+      
+ 
+  vars: 
+    clicisco: 
+      auth_pass: "{{ansible_ssh_pass}}"
+      authorize: "yes"
+      host: "{{ ansible_host }}"
+      password: "{{ansible_ssh_pass}}"
+      transport: cli
+      username: "{{ansible_user}}"
+      timeout: 20
+
+# Issue 2:
+- name: 'Customer B1 pings Customer B3'
+  hosts: CUSTB3
+  tasks: 
+    - name: 'Ping Both side IP addresses'
+      ios_command: 
+        commands: 
+          - "ping 10.10.20.2"
+        provider: "{{ clicisco }}"
+      
+      register: out
+    
+    - debug: msg="Ping Successfull between B1 and B3"
+      when: '"!!!!!" in out.stdout[0]'
+    
+    - debug: msg="Ping Failed between B1 and B3"
+      when: '"!!!!!" not in out.stdout[0]'
+      
+ 
+  vars: 
+    clicisco: 
+      auth_pass: "{{ansible_ssh_pass}}"
+      authorize: "yes"
+      host: "{{ ansible_host }}"
+      password: "{{ansible_ssh_pass}}"
+      transport: cli
+      username: "{{ansible_user}}"
+   
+# Issue 3:
+- name: 'ISIS Peering between PE2 and PE4'
+  hosts: PE2
+  tasks: 
+    - name: 'Check ISIS Neighborship with PE4'
+      ios_command: 
+        commands: 
+          - "show isis neighbors"        
+        provider: "{{ clicisco }}"
+      
+      register: out
+    
+    - debug: msg="ISIS Neighborship from PE2 to PE4 is up"
+      when: '"PE4" in out.stdout[0]'
+    
+    - debug: msg="ISIS Neighborship from PE2 to PE4 is down"
+      when: '"PE4" not in out.stdout[0]'
+      
+ 
+  vars: 
+    clicisco: 
+      auth_pass: "{{ansible_ssh_pass}}"
+      authorize: "yes"
+      host: "{{ ansible_host }}"
+      password: "{{ansible_ssh_pass}}"
+      transport: cli
+      username: "{{ansible_user}}"
+      
+# Issue 4:
+- name: 'BGP IPv4 Peering between PE2 and PE3'
+  hosts: PE2
+  tasks: 
+    - name: 'Ping Both side IP addresses'
+      ios_command: 
+        commands: 
+         - "show ip bgp ipv4 unicast summary"
+        provider: "{{ clicisco }}"
+      
+      register: out
+      ignore_errors: True
+    
+    - debug: msg="BGP Neighborship between PE3/PE2 is up"
+      when: '"3.3.3.3" in out.stdout[0]'
+    
+    - debug: msg="BGP Neighborship between PE3/PE2 is Down"
+      when: '"3.3.3.3" not in out.stdout[0]'
+      
+ 
+  vars: 
+    clicisco: 
+      auth_pass: "{{ansible_ssh_pass}}"
+      authorize: "yes"
+      host: "{{ ansible_host }}"
+      password: "{{ansible_ssh_pass}}"
+      transport: cli
+      username: "{{ansible_user}}"
+      
+# Issue 5:
+- name: 'MPLS Traffic Engineering PE2 --> PE3'
+  hosts: PE2
+  tasks: 
+    - name: 'Ping Both side IP addresses'
+      ios_command: 
+        commands: 
+         - "show mpls traffic-eng tunnels tunnel 200"
+        provider: "{{ clicisco }}"
+      
+      register: out
+    
+    - debug: msg="MPLS Traffic Engineering PE2 --> PE3 is up"
+      when: '"Signalling: connected" in out.stdout[0]'
+    
+    - debug: msg="MPLS Traffic Engineering PE2 --> PE3 is Down"
+      when: '"Signalling: connected" not in out.stdout[0]'
+      
+ 
+  vars: 
+    clicisco: 
+      auth_pass: "{{ansible_ssh_pass}}"
+      authorize: "yes"
+      host: "{{ ansible_host }}"
+      password: "{{ansible_ssh_pass}}"
+      transport: cli
+      username: "{{ansible_user}}"
+
+# Issue 6:
+- name: 'Customer B1 pings Customer B3'
+  hosts: CUSTB3
+  tasks: 
+    - name: 'Ping Both side IP addresses'
+      ios_command: 
+        commands: 
+          - "ping 8.8.8.8"        
+        provider: "{{ clicisco }}"
+      
+      register: out
+    
+    - debug: msg="Ping Successfull between B3 and Internet"
+      when: '"!!!!!" in out.stdout[0]'
+    
+    - debug: msg="Ping Failed between B3 and Internet"
+      when: '"!!!!!" not in out.stdout[0]'
+   
+  vars: 
+    clicisco: 
+      auth_pass: "{{ansible_ssh_pass}}"
+      authorize: "yes"
+      host: "{{ ansible_host }}"
+      password: "{{ansible_ssh_pass}}"
+      transport: cli
+      username: "{{ansible_user}}"
+      

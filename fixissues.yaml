@@ -1,0 +1,131 @@
+---
+# Issue 1:
+- name: 'Fix Customer A1 Cannot talk to A2'
+  hosts: PE3
+  tasks: 
+    - name: 'unShut SDP between two PEs'
+      sros_config:
+        lines: 
+            - 'configure service sdp 6774 no shutdown'
+        
+        save: 'yes'
+        provider: "{{ clialu }}"
+ 
+  vars: 
+    clialu:
+      host: "{{ ansible_host }}"
+      password: "{{ansible_ssh_pass}}"
+      transport: cli
+      username: "{{ansible_user}}"
+
+# Issue 2:
+- name: 'Fix Customer B1 Cannot talk to B3'
+  hosts: PE1
+  tasks: 
+    - name: 'Fix Import policy on PE1'
+      ios_config:
+        parents:
+            - 'vrf definition CUSTB'
+            - 'address-family ipv4'
+        lines: 
+            - 'no route-target import 6774:10'
+            - 'route-target import 6774:100'
+
+        save: 'yes'
+        provider: "{{ clicisco }}"
+ 
+  vars: 
+    clicisco: 
+      auth_pass: "{{ansible_ssh_pass}}"
+      authorize: "yes"
+      host: "{{ ansible_host }}"
+      password: "{{ansible_ssh_pass}}"
+      transport: cli
+      username: "{{ansible_user}}"
+      
+# Issue 3:
+- name: 'Fix ISIS Down between PE2 to PE4'
+  hosts: PE4
+  tasks: 
+    - name: 'Fix ISIS NET on PE4'
+      ios_config:
+        parents:
+            - 'router isis'
+        lines: 
+            - 'no net 49.6774.0002.0002.0002.00'
+            - 'net 49.6774.0004.0004.0004.00'
+
+        save: 'yes'
+        provider: "{{ clicisco }}"
+ 
+  vars: 
+    clicisco: 
+      auth_pass: "{{ansible_ssh_pass}}"
+      authorize: "yes"
+      host: "{{ ansible_host }}"
+      password: "{{ansible_ssh_pass}}"
+      transport: cli
+      username: "{{ansible_user}}"
+      
+# Issue 4:
+- name: 'Fix BGP IPv4 Down between PE2 to PE3'
+  hosts: PE2
+  tasks: 
+    - name: 'activate PE3 in BGP IPv4 in PE2'
+      ios_config:
+        parents:
+            - 'router bgp 6774'
+            - 'address-family ipv4'
+        lines: 
+            - 'neighbor 3.3.3.3 activate'
+
+        save: 'yes'
+        provider: "{{ clicisco }}"
+ 
+  vars: 
+    clicisco: 
+      auth_pass: "{{ansible_ssh_pass}}"
+      authorize: "yes"
+      host: "{{ ansible_host }}"
+      password: "{{ansible_ssh_pass}}"
+      transport: cli
+      username: "{{ansible_user}}"
+      
+# Issue 5:
+- name: 'Fix MPLS Traffic Engineering from PE2 to PE3'
+  hosts: PE3
+  tasks: 
+    - name: 'activate PE3 RSVP interfaces'
+      sros_config:
+        lines: 
+            - 'configure router rsvp interface "PE1" no shutdown'
+            - 'configure router rsvp interface "PE4" no shutdown'
+        
+        save: 'yes'
+        provider: "{{ clialu }}"
+ 
+  vars: 
+    clialu:
+      host: "{{ ansible_host }}"
+      password: "{{ansible_ssh_pass}}"
+      transport: cli
+      username: "{{ansible_user}}"
+      
+# Issue 6:
+- name: 'Fix Internet Access for CUSTB3'
+  hosts: ALU-2
+  tasks: 
+    - name: 'FIX Import Policies on ALU-2'
+      sros_config:
+        lines: 
+            - 'configure service vprn 500 customer 200 vrf-target export target:6774:199 import target:6774:100'
+        
+        save: 'yes'
+        provider: "{{ clialu }}"
+ 
+  vars: 
+    clialu:
+      host: "{{ ansible_host }}"
+      password: "{{ansible_ssh_pass}}"
+      transport: cli
+      username: "{{ansible_user}}"
